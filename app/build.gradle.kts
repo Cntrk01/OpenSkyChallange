@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -19,6 +20,22 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // debug {} release {} ihtiyaç durumuna göre yazılıp içine eklenebilir.
+        buildConfigField(
+            "String",
+            "CLIENT_ID",
+            "\"${project.findProperty("CLIENT_ID")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "CLIENT_SECRET_KEY",
+            "\"${project.findProperty("CLIENT_SECRET_KEY")}\""
+        )
+
+        manifestPlaceholders["MAPS_API_KEY"] =
+            providers.gradleProperty("MAPS_API_KEY").getOrElse("")
     }
 
     buildTypes {
@@ -31,11 +48,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
     hilt {
         enableAggregatingTask = false
@@ -51,6 +72,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,4 +91,8 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.maps.android:maps-compose:4.4.1")
+
 }
