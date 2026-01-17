@@ -16,10 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.challange.openskychallange.domain.FlightUiModel
+import com.challange.openskychallange.R
+import com.challange.openskychallange.domain.models.FlightUiModel
+import com.challange.openskychallange.extensions.bitmapDescriptorFromResource
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -41,6 +45,8 @@ fun FlightMapComponent(
     var onMapLoaded by remember { mutableStateOf(false) }
     var selectedFlightIcao by remember { mutableStateOf<String?>(null) }
 
+    val context = LocalContext.current
+
     LaunchedEffect(cameraPositionState.isMoving) {
         onCameraMoving(cameraPositionState.isMoving)
 
@@ -48,12 +54,15 @@ fun FlightMapComponent(
             onCameraIdle(cameraPositionState.position.target)
         }
     }
-
+    var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         onMapClick = { selectedFlightIcao = null },
-        onMapLoaded = { onMapLoaded = true },
+        onMapLoaded = {
+            onMapLoaded = true
+            planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
+        },
     ) {
         if (onMapLoaded) {
             flights.forEach { flight ->
@@ -70,6 +79,7 @@ fun FlightMapComponent(
                 }
 
                 MarkerInfoWindowContent(
+                    icon = planeIcon,
                     state = markerState,
                     rotation = flight.heading ?: 0f,
                     anchor = Offset(0.5f, 0.5f),
@@ -103,7 +113,7 @@ private fun FlightInfoWindow(flight: FlightUiModel) {
 
             Text(text = "Country: ${flight.originCountry}")
             Text(text = "ICAO24: ${flight.icao24}")
-
+            Text(text = "Velocity: ${flight.velocity}")
             flight.heading?.let {
                 Text(text = "Heading: ${it.toInt()}°")
             }
@@ -121,7 +131,8 @@ private fun FlightMapComponentPreview(){
             originCountry = "Turkey",
             lat = 41.015137,
             lon = 28.979530,
-            heading = 360f
+            heading = 360f,
+            velocity = 220.0,
         ),
         FlightUiModel(
             icao24 = "xyz789",
@@ -129,7 +140,8 @@ private fun FlightMapComponentPreview(){
             originCountry = "Turkey",
             lat = 41.065137,
             lon = 28.579530,
-            heading = 90f
+            heading = 90f,
+            velocity = 320.0,
         )
     )
     FlightMapComponent(flights = flights)
