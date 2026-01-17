@@ -1,4 +1,4 @@
-package com.challange.openskychallange.extensions
+package com.challange.openskychallange.common.extensions
 
 import android.content.Context
 import android.graphics.BitmapFactory

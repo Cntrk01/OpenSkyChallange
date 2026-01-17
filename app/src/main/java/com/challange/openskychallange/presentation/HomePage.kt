@@ -42,7 +42,7 @@ fun HomePage(
 
     LaunchedEffect(Unit) {
         homeViewModel
-            .getAirplanes(
+            .onBoundsChanged(
                 lamin = 40.0,
                 lamax = 50.0,
                 lomin = 20.0,
@@ -83,17 +83,10 @@ fun HomePage(
                 flights = uiState.airplaneList,
                 zoomScale = selectedZoomScale,
                 onCameraMoving = {
-                    homeViewModel.onCameraMoving(isMoving = it)
+
                 },
                 onBoundsChanged = { lamin, lomin, lamax, lomax ->
-                    homeViewModel.getAirplanes(
-                        lamin = lamin,
-                        lamax = lamax,
-                        lomin = lomin,
-                        lomax = lomax,
-                    )
-
-                    homeViewModel.onCameraMoved(
+                    homeViewModel.onBoundsChanged(
                         lamin = lamin,
                         lamax = lamax,
                         lomin = lomin,
