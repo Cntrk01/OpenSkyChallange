@@ -1,6 +1,6 @@
 package com.challange.openskychallange.domain.models
 
-data class ServiceModel(
+data class OpenSkyServiceModel(
     val time: Int,
     val states: List<List<Any>>
 )

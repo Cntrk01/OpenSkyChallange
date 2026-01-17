@@ -1,4 +1,4 @@
-package com.challange.openskychallange.components
+package com.challange.openskychallange.common.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,13 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+private val zoomOptions = listOf(
+    3f, 5f, 7f, 9f, 11f, 13f, 15f, 17f, 19f
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryDropDownMenu(
+fun MapZoomDropdown(
     modifier: Modifier = Modifier,
-    countries: List<String> = emptyList(),
-    selectedCountry: String = "Turkey",
-    onCountrySelected: (String) -> Unit = {},
+    selectedZoom: Float,
+    onZoomSelected: (Float) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -35,7 +39,6 @@ fun CountryDropDownMenu(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
-
         OutlinedTextField(
             modifier = Modifier
                 .menuAnchor(
@@ -43,10 +46,10 @@ fun CountryDropDownMenu(
                     enabled = true
                 )
                 .fillMaxWidth(),
-            value = selectedCountry,
+            value = selectedZoom.toString(),
             onValueChange = {},
             readOnly = true,
-            label = { Text("Origin Country") },
+            label = { Text("Map Zoom") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded
@@ -56,14 +59,14 @@ fun CountryDropDownMenu(
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false } // Burası menü dışındaki bir alana tıklandığında kapatacak
+            onDismissRequest = { expanded = false }
         ) {
-            countries.forEach { country ->
+            zoomOptions.forEach { zoom ->
                 DropdownMenuItem(
-                    text = { Text(country) },
+                    text = { Text(zoom.toString()) },
                     onClick = {
-                        onCountrySelected(country)
                         expanded = false
+                        onZoomSelected(zoom)
                     }
                 )
             }
@@ -73,16 +76,8 @@ fun CountryDropDownMenu(
 
 @Preview(showBackground = true)
 @Composable
-private fun CountryDropDownMenuPreview() {
-    var selectedCountry by remember { mutableStateOf("Turkey") }
-
-    val countries = listOf(
-        "Turkey",
-        "United Kingdom",
-        "Germany",
-        "France",
-        "Netherlands"
-    )
+private fun MapZoomDropdownPreview() {
+    var selectedZoom by remember { mutableFloatStateOf(13f) }
 
     MaterialTheme {
         Surface(
@@ -90,11 +85,11 @@ private fun CountryDropDownMenuPreview() {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            CountryDropDownMenu(
-                countries = countries,
-                selectedCountry = selectedCountry,
-                onCountrySelected = { selectedCountry = it }
+            MapZoomDropdown(
+                selectedZoom = selectedZoom,
+                onZoomSelected = { selectedZoom = it }
             )
         }
     }
 }
+
