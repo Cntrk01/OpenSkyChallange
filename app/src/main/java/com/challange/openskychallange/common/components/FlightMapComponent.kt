@@ -1,4 +1,4 @@
-package com.challange.openskychallange.components
+package com.challange.openskychallange.common.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.challange.openskychallange.R
 import com.challange.openskychallange.domain.models.FlightUiModel
 import com.challange.openskychallange.extensions.bitmapDescriptorFromResource
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -36,7 +37,7 @@ fun FlightMapComponent(
     flights: List<FlightUiModel>,
     zoomScale : Float = 13f,
     onCameraMoving: (Boolean) -> Unit = {},
-    onCameraIdle: (LatLng) -> Unit = {},
+    onBoundsChanged: (lamin: Double, lomin: Double, lamax: Double, lomax: Double) -> Unit,
 ) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(41.015137, 28.979530), zoomScale)
@@ -47,11 +48,29 @@ fun FlightMapComponent(
 
     val context = LocalContext.current
 
+    LaunchedEffect(zoomScale) {
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.zoomTo(zoomScale),
+            durationMs = 1000
+        )
+    }
+
     LaunchedEffect(cameraPositionState.isMoving) {
         onCameraMoving(cameraPositionState.isMoving)
 
         if (!cameraPositionState.isMoving) {
-            onCameraIdle(cameraPositionState.position.target)
+            val projection = cameraPositionState.projection
+            val visibleRegion = projection?.visibleRegion
+
+            visibleRegion?.let { region ->
+                val bounds = region.latLngBounds
+                onBoundsChanged(
+                    bounds.southwest.latitude,
+                    bounds.southwest.longitude,
+                    bounds.northeast.latitude,
+                    bounds.northeast.longitude
+                )
+            }
         }
     }
     var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
@@ -64,7 +83,7 @@ fun FlightMapComponent(
             planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
         },
     ) {
-        if (onMapLoaded) {
+
             flights.forEach { flight ->
                 val markerState = remember(flight.icao24) {
                     MarkerState(LatLng(flight.lat, flight.lon))
@@ -91,7 +110,7 @@ fun FlightMapComponent(
                         FlightInfoWindow(flight)
                     }
                 )
-            }
+
         }
     }
 }
@@ -144,5 +163,10 @@ private fun FlightMapComponentPreview(){
             velocity = 320.0,
         )
     )
-    FlightMapComponent(flights = flights)
+    FlightMapComponent(
+        flights = flights,
+        onBoundsChanged = { lamin, lomin, lamax, lomax ->
+
+        }
+    )
 }
