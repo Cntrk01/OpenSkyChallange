@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.challange.openskychallange.R
 import com.challange.openskychallange.domain.models.FlightUiModel
-import com.challange.openskychallange.extensions.bitmapDescriptorFromResource
+import com.challange.openskychallange.common.extensions.bitmapDescriptorFromResource
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.CameraPosition
