@@ -28,7 +28,8 @@ class MainActivity : ComponentActivity() {
                                 originCountry = "Turkey",
                                 lat = 41.015137,
                                 lon = 28.979530,
-                                heading = 360f
+                                heading = 360f,
+                                velocity = 220.2,
                             ),
                             FlightUiModel(
                                 icao24 = "abc1234",
@@ -36,7 +37,8 @@ class MainActivity : ComponentActivity() {
                                 originCountry = "Turkey",
                                 lat = 41.065137,
                                 lon = 28.579530,
-                                heading = 360f
+                                heading = 275f,
+                                velocity = 240.2,
                             )
                         ),
                         onCameraMoving = {
