@@ -1,4 +1,4 @@
-package com.challange.openskychallange.domain
+package com.challange.openskychallange.domain.models
 
 data class FlightDomainModel(
     val icao24: String,

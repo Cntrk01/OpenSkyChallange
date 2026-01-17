@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.challange.openskychallange.components.FlightMapComponent
-import com.challange.openskychallange.domain.FlightUiModel
+import com.challange.openskychallange.domain.models.FlightUiModel
 import com.challange.openskychallange.ui.theme.OpenSkyChallangeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
