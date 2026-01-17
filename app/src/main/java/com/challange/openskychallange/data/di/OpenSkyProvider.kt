@@ -44,14 +44,12 @@ object OpenSkyProvider {
                 var token = tokenManager.getToken()
 
                 if (token == null) {
-                    println("API_LOG: Token yok veya süresi dolmuş, yeni token isteniyor...")
                     token = authRepository.fetchNewToken()
                 }
 
                 val requestBuilder = chain.request().newBuilder()
 
                 if (token != null) {
-                    println("API_LOG: Header'a Token ekleniyor: Bearer ${token.take(10)}...")
                     requestBuilder.header("Authorization", "Bearer $token")
                 } else {
                     println("API_LOG: HATA - Token alınamadı, istek auth olmadan atılıyor!")
