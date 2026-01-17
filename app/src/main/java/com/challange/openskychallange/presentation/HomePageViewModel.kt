@@ -18,7 +18,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface data class Bounds(
+private data class Bounds(
     val lamin: Double,
     val lomin: Double,
     val lamax: Double,
@@ -30,7 +30,7 @@ class HomePageViewModel @Inject constructor(
     private val openSkyUseCase: OpenSkyUseCase
 ): ViewModel(){
 
-    private var pollingJob: Job? = null
+    private var counterJob: Job? = null
     private var currentBounds: Bounds? = null
 
     private val selectedCountry = MutableStateFlow<String?>(null)
@@ -83,8 +83,8 @@ class HomePageViewModel @Inject constructor(
     }
 
     private fun startPolling() {
-        pollingJob?.cancel()
-        pollingJob = viewModelScope.launch {
+        counterJob?.cancel()
+        counterJob = viewModelScope.launch {
             while (isActive) {
                 delay(10_000)
                 currentBounds?.let { getAirplanes(it) }
