@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 fun CountryDropDown(
     modifier: Modifier = Modifier,
     countries: List<String> = emptyList(),
-    defaultCountry: String = "Turkey",
+    defaultCountry: String = "All Country",
     onCountrySelected: (String) -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
