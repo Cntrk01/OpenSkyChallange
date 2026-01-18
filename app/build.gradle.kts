@@ -68,6 +68,13 @@ android {
     hilt {
         enableAggregatingTask = false
     }
+
+    //For Robolectric to be able to access resources, this setting must be present within the Android block.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -99,7 +106,8 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.maps.android:maps-compose:4.4.1")
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
 
+    testImplementation(libs.androidx.ui.test.junit4)
 }

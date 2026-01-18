@@ -33,7 +33,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun FlightMapComponent(
+fun FlightMap(
     flights: List<FlightUiModel>,
     zoomScale : Float = 13f,
     onCameraMoving: (Boolean) -> Unit = {},
@@ -142,7 +142,7 @@ private fun FlightInfoWindow(flight: FlightUiModel) {
 
 @Preview
 @Composable
-private fun FlightMapComponentPreview(){
+private fun FlightMapPreview(){
     val flights = listOf(
         FlightUiModel(
             icao24 = "abc123",
@@ -163,7 +163,7 @@ private fun FlightMapComponentPreview(){
             velocity = 320.0,
         )
     )
-    FlightMapComponent(
+    FlightMap(
         flights = flights,
         onBoundsChanged = { lamin, lomin, lamax, lomax ->
 

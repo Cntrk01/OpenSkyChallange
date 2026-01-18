@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryDropDownMenu(
+fun CountryDropDown(
     modifier: Modifier = Modifier,
     countries: List<String> = emptyList(),
     defaultCountry: String = "Turkey",
@@ -75,7 +75,7 @@ fun CountryDropDownMenu(
 
 @Preview(showBackground = true)
 @Composable
-private fun CountryDropDownMenuPreview() {
+private fun CountryDropDownPreview() {
     var selectedCountry by remember { mutableStateOf("Turkey") }
 
     val countries = listOf(
@@ -92,7 +92,7 @@ private fun CountryDropDownMenuPreview() {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            CountryDropDownMenu(
+            CountryDropDown(
                 countries = countries,
                 defaultCountry = selectedCountry,
                 onCountrySelected = { selectedCountry = it }
