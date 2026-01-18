@@ -116,32 +116,8 @@ fun FlightMap(
                         LatLng(flight.lat, flight.lon),
                     )
 
-                    //It ignores small movements when there are many planes far away on the map.
-                    //It reduces freezing when multiple markers appear.
-                    //Correct behavior according to Zoom.
-                    //No teleportation sensation, smooth transitions.
-                    //NOTE: As you zoom out of the map, the planes may move backward.
-                    //Because:
-                    // While Zoom OUT:
-                    // epsilon ↑
-                    // step ↓
-                    // animation is shorter / less frequent
-                    LaunchedEffect(flight.lat, flight.lon, cameraPositionState.position.zoom) {
-
-                        val newPos = LatLng(flight.lat, flight.lon)
-                        val current = markerState.position
-                        val epsilon = epsilonForZoom(cameraPositionState.position.zoom)
-
-                        if (current.isCloseTo(newPos, epsilon)) return@LaunchedEffect
-
-                        val steps = if (cameraPositionState.position.zoom > 10f) 20 else 8
-                        val delayMs = 50L
-
-                        repeat(steps) { step ->
-                            val fraction = (step + 1) / steps.toFloat()
-                            markerState.position = lerpLatLng(current, newPos, fraction)
-                            delay(delayMs)
-                        }
+                    LaunchedEffect(flight.lat, flight.lon) {
+                        markerState.position = LatLng(flight.lat, flight.lon)
                     }
 
                     //Effect that triggers the infobox to open.
