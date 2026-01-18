@@ -108,15 +108,12 @@ The repository includes:
 
 ## Demo Videos
 
+
 <table>
   <tr>
     <td align="center">
       <b>Map Interaction & Flight Updates</b><br/>
-      <video src="https://github.com/user-attachments/assets/bc19d2eb-d5d4-4086-a9c0-9d4a1e3e6057" controls width="320"></video>
-    </td>
-    <td align="center">
-      <b>Filtering & InfoWindow Usage</b><br/>
-      <video src="https://github.com/user-attachments/assets/c610480f-36cc-4ea5-b0a8-72f04aa3307d" controls width="320"></video>
+      <video src="https://github.com/user-attachments/assets/a26b96ca-794b-429e-8e35-81b35336f6e7" controls width="640" height="640></video>
     </td>
   </tr>
 </table>
