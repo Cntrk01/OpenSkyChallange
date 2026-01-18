@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.challange.openskychallange.R
 import com.challange.openskychallange.domain.models.FlightUiModel
 import com.challange.openskychallange.common.extensions.bitmapDescriptorFromResource
+import com.challange.openskychallange.common.extensions.epsilonForZoom
+import com.challange.openskychallange.common.extensions.isCloseTo
+import com.challange.openskychallange.common.extensions.lerpLatLng
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.CameraPosition
@@ -32,6 +36,8 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
+import kotlinx.coroutines.delay
 
 /**
  * This Composable is the main map component that displays flights as interactive markers on Google Map.
@@ -58,9 +64,11 @@ fun FlightMap(
     }
 
     var selectedFlightIcao by remember { mutableStateOf<String?>(null) }
+    var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
 
     val context = LocalContext.current
 
+    //If a new zoom value becomes available, it will be triggered and the camera's zoom level will change.
     LaunchedEffect(zoomScale) {
         cameraPositionState.animate(
             update = CameraUpdateFactory.zoomTo(zoomScale),
@@ -68,6 +76,8 @@ fun FlightMap(
         )
     }
 
+    //The camera captures movement. Is it moving? A boolean value is assigned accordingly,
+    //and it also shares the last known position coordinates when the movement stops.
     LaunchedEffect(cameraPositionState.isMoving) {
         snapshotFlow { cameraPositionState.isMoving }
             .collect { isMoving ->
@@ -88,42 +98,77 @@ fun FlightMap(
                 }
             }
     }
-    var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         onMapClick = { selectedFlightIcao = null },
         onMapLoaded = {
+            //When this image value is given before the map is loaded, the planes appear on the screen even
+            // though there is no map, which is not what I want, therefore the value is set here.
             planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
         },
     ) {
             flights.forEach { flight ->
-                val markerState = remember(flight.icao24) {
-                    MarkerState(LatLng(flight.lat, flight.lon))
-                }
+                key(flight.icao24) {
+                    val markerState = rememberMarkerState(
+                        flight.icao24,
+                        LatLng(flight.lat, flight.lon),
+                    )
 
-                LaunchedEffect(selectedFlightIcao) {
-                    if (selectedFlightIcao == flight.icao24) {
-                        markerState.showInfoWindow()
-                    } else {
-                        markerState.hideInfoWindow()
+                    //It ignores small movements when there are many planes far away on the map.
+                    //It reduces freezing when multiple markers appear.
+                    //Correct behavior according to Zoom.
+                    //No teleportation sensation, smooth transitions.
+                    //NOTE: As you zoom out of the map, the planes may move backward.
+                    //Because:
+                    // While Zoom OUT:
+                    // epsilon ↑
+                    // step ↓
+                    // animation is shorter / less frequent
+                    LaunchedEffect(flight.lat, flight.lon, cameraPositionState.position.zoom) {
+
+                        val newPos = LatLng(flight.lat, flight.lon)
+                        val current = markerState.position
+                        val epsilon = epsilonForZoom(cameraPositionState.position.zoom)
+
+                        if (current.isCloseTo(newPos, epsilon)) return@LaunchedEffect
+
+                        val steps = if (cameraPositionState.position.zoom > 10f) 20 else 8
+                        val delayMs = 50L
+
+                        repeat(steps) { step ->
+                            val fraction = (step + 1) / steps.toFloat()
+                            markerState.position = lerpLatLng(current, newPos, fraction)
+                            delay(delayMs)
+                        }
                     }
-                }
 
-                MarkerInfoWindowContent(
-                    icon = planeIcon,
-                    state = markerState,
-                    rotation = flight.heading ?: 0f,
-                    anchor = Offset(0.5f, 0.5f),
-                    onClick = {
-                        selectedFlightIcao = if (selectedFlightIcao == flight.icao24) null else flight.icao24
-                        true
-                    },
-                    content = {
-                        FlightInfoWindow(flight)
+                    //Effect that triggers the infobox to open.
+                    LaunchedEffect(selectedFlightIcao) {
+                        if (selectedFlightIcao == flight.icao24) {
+                            markerState.showInfoWindow()
+                        } else {
+                            markerState.hideInfoWindow()
+                        }
                     }
-                )
 
+                    //Clicking on the plane opens an info box that shares some information about the aircraft.
+                    MarkerInfoWindowContent(
+                        icon = planeIcon,
+                        state = markerState,
+                        rotation = flight.heading ?: 0f,
+                        anchor = Offset(0.5f, 0.5f),
+                        zIndex = if (selectedFlightIcao == flight.icao24) 1.0f else 0.0f,
+                        onClick = {
+                            selectedFlightIcao = if (selectedFlightIcao == flight.icao24) null else flight.icao24
+                            false
+                        },
+                        content = {
+                            FlightInfoWindow(flight)
+                        }
+                    )
+                }
         }
     }
 }

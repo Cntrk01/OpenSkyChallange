@@ -12,7 +12,7 @@ import javax.inject.Inject
 class OpenSkyUseCase @Inject constructor(
     private val repository: OpenSkyRepository,
 ) {
-    suspend fun getAirplane(
+    fun getAirplane(
         lamin: Double,
         lomin: Double,
         lamax: Double,

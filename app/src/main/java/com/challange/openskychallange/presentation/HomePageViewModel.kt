@@ -91,7 +91,12 @@ class HomePageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                errorMessage = null,
+                errorMessage =
+                if (filteredList.isEmpty()) {
+                    "No aircraft were found in the vicinity. Please change your location."
+                } else {
+                    null
+                },
                 airplaneList = filteredList
             )
         }
@@ -128,7 +133,7 @@ class HomePageViewModel @Inject constructor(
                 geoBounds.lamin,
                 geoBounds.lomin,
                 geoBounds.lamax,
-                geoBounds.lomax
+                geoBounds.lomax,
             ).collectLatest { response ->
                 when (response) {
                     is Response.Loading -> {
