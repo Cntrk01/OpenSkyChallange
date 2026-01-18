@@ -8,6 +8,11 @@ The app dynamically updates aircraft positions based on user interactions and **
 
 ---
 
+## Android Studio Version
+
+If you encounter any dependency or version-related issues while running the application, please note that Android Studio Otter 3 was used during development.
+The development process was carried out using this version, which was the latest Android Studio release as of January 16, 2026.
+
 ## Architecture
 
 The project follows **Clean Architecture + MVVM** principles.
