@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +33,19 @@ import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+/**
+ * This Composable is the main map component that displays flights as interactive markers on Google Map.
+ *
+ *  Manages the map’s camera position and zoom level
+ *  Observes camera movements:
+ *   -Notifies the parent when the camera starts moving (onCameraMoving)
+ *   -When movement stops, calculates the visible map bounds (LatLngBounds) and sends them upward via onBoundsChanged for API requests
+ *   -Creates a custom airplane marker icon once the map is loaded
+ *   -Renders each flight as a marker:
+ *   -Markers are rotated based on the flight’s heading
+ *   -Tapping a marker toggles its InfoWindow
+ *   -Tapping on an empty map area clears the current selection
+ * */
 @Composable
 fun FlightMap(
     flights: List<FlightUiModel>,
@@ -56,22 +70,24 @@ fun FlightMap(
     }
 
     LaunchedEffect(cameraPositionState.isMoving) {
-        onCameraMoving(cameraPositionState.isMoving)
+        snapshotFlow { cameraPositionState.isMoving }
+            .collect { isMoving ->
+                onCameraMoving(isMoving)
 
-        if (!cameraPositionState.isMoving) {
-            val projection = cameraPositionState.projection
-            val visibleRegion = projection?.visibleRegion
-
-            visibleRegion?.let { region ->
-                val bounds = region.latLngBounds
-                onBoundsChanged(
-                    bounds.southwest.latitude,
-                    bounds.southwest.longitude,
-                    bounds.northeast.latitude,
-                    bounds.northeast.longitude
-                )
+                if (!isMoving) {
+                    cameraPositionState.projection
+                        ?.visibleRegion
+                        ?.latLngBounds
+                        ?.let { bounds ->
+                            onBoundsChanged(
+                                bounds.southwest.latitude,
+                                bounds.southwest.longitude,
+                                bounds.northeast.latitude,
+                                bounds.northeast.longitude
+                            )
+                        }
+                }
             }
-        }
     }
     var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
     GoogleMap(
@@ -83,7 +99,6 @@ fun FlightMap(
             planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
         },
     ) {
-
             flights.forEach { flight ->
                 val markerState = remember(flight.icao24) {
                     MarkerState(LatLng(flight.lat, flight.lon))

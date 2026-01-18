@@ -15,6 +15,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 
+/**
+ * This class is a Hilt provider module that creates and provides Retrofit,OkHttpClient
+ * and Auth API instances for OpenSky, scoped as singletons across the application.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object OpenSkyProvider {

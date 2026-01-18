@@ -2,7 +2,7 @@ package com.challange.openskychallange.domain.usecase
 
 import com.challange.openskychallange.common.response.Response
 import com.challange.openskychallange.domain.models.FlightUiModel
-import com.challange.openskychallange.domain.models.mapStateToFlight
+import com.challange.openskychallange.domain.models.toFlightDomainModel
 import com.challange.openskychallange.domain.models.toUiModel
 import com.challange.openskychallange.domain.repository.OpenSkyRepository
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,9 @@ class OpenSkyUseCase @Inject constructor(
             val states = response.states
             if (states.isNotEmpty()) {
                 val uiModels = states.map { stateList ->
-                    mapStateToFlight(stateList).toUiModel()
+                    stateList
+                        .toFlightDomainModel()
+                        .toUiModel()
                 }
                 emit(Response.Success(uiModels))
             } else {

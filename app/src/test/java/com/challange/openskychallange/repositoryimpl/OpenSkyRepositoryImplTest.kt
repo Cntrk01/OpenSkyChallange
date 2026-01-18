@@ -2,7 +2,7 @@ package com.challange.openskychallange.repositoryimpl
 
 import com.challange.openskychallange.data.repository.OpenSkyRepositoryImpl
 import com.challange.openskychallange.data.service.OpenSkyApi
-import com.challange.openskychallange.domain.models.OpenSkyServiceModel
+import com.challange.openskychallange.domain.models.OpenSkyServiceResponse
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -24,7 +24,7 @@ class OpenSkyRepositoryImplTest {
     @Test
     fun `getStates when called should return data from api`() = runTest {
         val lamin = 40.0; val lomin = 28.0; val lamax = 42.0; val lomax = 30.0
-        val mockResponse = OpenSkyServiceModel(
+        val mockResponse = OpenSkyServiceResponse(
             time = 123456789,
             states = listOf(listOf("icao24", "callsign", "origin_country"))
         )
