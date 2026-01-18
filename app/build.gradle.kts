@@ -109,7 +109,5 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
 
-    testImplementation(libs.robolectric)
-
     testImplementation(libs.androidx.ui.test.junit4)
 }

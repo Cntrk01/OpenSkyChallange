@@ -12,6 +12,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MapZoomDropdownTest {
 
+
     @get:Rule
     val composeTestRule = createComposeRule()
 
