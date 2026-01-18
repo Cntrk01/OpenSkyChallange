@@ -102,16 +102,7 @@ The repository includes:
     - InfoWindow usage
 
 ## Demo Videos
+https://github.com/user-attachments/assets/bc19d2eb-d5d4-4086-a9c0-9d4a1e3e6057
+https://github.com/user-attachments/assets/c610480f-36cc-4ea5-b0a8-72f04aa3307d
 
-<table>
-  <tr>
-    <td align="center">
-      <b>Map Interaction & Flight Updates</b><br/>
-<video src="https://github.com/Cntrk01/OpenSkyChallange/blob/main/assets/OpenSky1.mp4" controls width="320">https://github.com/user-attachments/assets/984ec656-3631-4612-a3d2-947c913d8ca6</video>
-    </td>
-    <td align="center">
-      <b>Filtering & InfoWindow Usage</b><br/>
-      <video src="https://github.com/Cntrk01/OpenSkyChallange/blob/main/assets/OpenSky2.mp4" controls width="320">https://github.com/user-attachments/assets/93177065-4fbc-4589-8fbb-4adf0835967e</video>
-    </td>
-  </tr>
-</table>
+
