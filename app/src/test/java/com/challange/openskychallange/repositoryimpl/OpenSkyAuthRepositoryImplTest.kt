@@ -1,4 +1,4 @@
-package com.challange.openskychallange
+package com.challange.openskychallange.repositoryimpl
 
 import com.challange.openskychallange.data.auth.TokenManager
 import com.challange.openskychallange.data.repository.OpenSkyAuthRepositoryRepositoryImpl
@@ -29,7 +29,7 @@ class OpenSkyAuthRepositoryImplTest {
     }
 
     @Test
-    fun `fetchNewToken - when api call is successful - returns token and saves it`() {
+    fun `fetchNewToken when api call is successful returns token and saves it`() {
         val mockTokenResponse = TokenResponse(accessToken = "new_token_123", expiresIn = 3600)
         val mockCall = mock<Call<TokenResponse>>()
 
@@ -43,7 +43,7 @@ class OpenSkyAuthRepositoryImplTest {
     }
 
     @Test
-    fun `fetchNewToken - when api call fails - returns null`() {
+    fun `fetchNewToken when api call fails returns null`() {
         val mockCall = mock<Call<TokenResponse>>()
 
         val errorResponseBody = "".toResponseBody(null)
@@ -59,7 +59,7 @@ class OpenSkyAuthRepositoryImplTest {
     }
 
     @Test
-    fun `authenticate - when fetchNewToken succeeds - returns request with bearer header`() {
+    fun `authenticate when fetchNewToken succeeds returns request with bearer header`() {
         val mockTokenResponse = TokenResponse("valid_token", 3600)
         val mockCall = mock<Call<TokenResponse>>()
         whenever(authApi.getAccessTokenSync()).thenReturn(mockCall)
@@ -76,7 +76,7 @@ class OpenSkyAuthRepositoryImplTest {
     }
 
     @Test
-    fun `authenticate - when fetchNewToken fails - returns null`() {
+    fun `authenticate when fetchNewToken fails returns null`() {
         val mockCall = mock<Call<TokenResponse>>()
         whenever(authApi.getAccessTokenSync()).thenReturn(mockCall)
         whenever(mockCall.execute()).thenThrow(RuntimeException("Network Error"))
