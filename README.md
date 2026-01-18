@@ -108,14 +108,4 @@ The repository includes:
 
 ## Demo Videos
 
-
-<table>
-  <tr>
-    <td align="center">
-      <b>Map Interaction & Flight Updates</b><br/>
-      <video src="https://github.com/user-attachments/assets/a26b96ca-794b-429e-8e35-81b35336f6e7" controls width="640" height="640></video>
-    </td>
-  </tr>
-</table>
-
-
+https://github.com/user-attachments/assets/e77c2a2d-c9c5-4b82-bb0d-ee9cd68e87ce
