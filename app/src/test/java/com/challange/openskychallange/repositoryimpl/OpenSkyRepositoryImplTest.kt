@@ -1,4 +1,4 @@
-package com.challange.openskychallange
+package com.challange.openskychallange.repositoryimpl
 
 import com.challange.openskychallange.data.repository.OpenSkyRepositoryImpl
 import com.challange.openskychallange.data.service.OpenSkyApi
@@ -22,7 +22,7 @@ class OpenSkyRepositoryImplTest {
     }
 
     @Test
-    fun `getStates - when called - should return data from api`() = runTest {
+    fun `getStates when called should return data from api`() = runTest {
         val lamin = 40.0; val lomin = 28.0; val lamax = 42.0; val lomax = 30.0
         val mockResponse = OpenSkyServiceModel(
             time = 123456789,
@@ -40,7 +40,7 @@ class OpenSkyRepositoryImplTest {
     }
 
     @Test(expected = Exception::class)
-    fun `getStates - when api throws exception - should propagate exception`() = runTest {
+    fun `getStates when api throws exception should propagate exception`() = runTest {
         whenever(api.getFlightsInRegion(0.0, 0.0, 0.0, 0.0))
             .thenThrow(RuntimeException("Network Error"))
 
