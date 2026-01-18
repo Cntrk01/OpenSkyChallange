@@ -57,7 +57,6 @@ fun FlightMap(
         position = CameraPosition.fromLatLngZoom(LatLng(41.015137, 28.979530), zoomScale)
     }
 
-    var onMapLoaded by remember { mutableStateOf(false) }
     var selectedFlightIcao by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
@@ -95,7 +94,6 @@ fun FlightMap(
         cameraPositionState = cameraPositionState,
         onMapClick = { selectedFlightIcao = null },
         onMapLoaded = {
-            onMapLoaded = true
             planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
         },
     ) {
