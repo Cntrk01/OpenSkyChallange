@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.challange.openskychallange.common.response.Response
 import com.challange.openskychallange.domain.models.FlightUiModel
+import com.challange.openskychallange.domain.models.GeoBounds
 import com.challange.openskychallange.domain.usecase.OpenSkyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,20 +19,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private data class Bounds(
-    val lamin: Double,
-    val lomin: Double,
-    val lamax: Double,
-    val lomax: Double
-)
-
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     private val openSkyUseCase: OpenSkyUseCase
 ): ViewModel(){
 
     private var counterJob: Job? = null
-    private var currentBounds: Bounds? = null
+    private var currentGeoBounds: GeoBounds? = null
 
     private val selectedCountry = MutableStateFlow<String?>(null)
     private var allFlights: List<FlightUiModel> = emptyList()
@@ -42,28 +36,49 @@ class HomePageViewModel @Inject constructor(
     private val _countries = MutableStateFlow<List<String>>(emptyList())
     val countries: StateFlow<List<String>> = _countries.asStateFlow()
 
+    /**
+     * Triggered when the visible map bounds change.
+     *
+     * Receives the new bounding box values after user zoom or pan actions.
+     * If the bounds have not changed, no new request is made.
+     * If bounds are updated:
+     *  - Fetches new airplane data
+     *  - Starts automatic polling every 10 seconds
+     */
     fun onBoundsChanged(
         lamin: Double,
         lomin: Double,
         lamax: Double,
         lomax: Double
     ) {
-        val newBounds = Bounds(lamin, lomin, lamax, lomax)
+        val newGeoBounds = GeoBounds(lamin, lomin, lamax, lomax)
 
-        if (newBounds == currentBounds) return
+        if (newGeoBounds == currentGeoBounds) return
 
-        currentBounds = newBounds
+        currentGeoBounds = newGeoBounds
 
-        getAirplanes(newBounds)
+        getAirplanes(newGeoBounds)
 
         startPolling()
     }
 
+    /**
+     * Updates the selected country state.
+     *
+     * If "All" is selected, country filtering is disabled.
+     * After updating the selection, the flight list is re-filtered.
+     */
     fun selectedCountry(country: String) {
         selectedCountry.value = if (country == "All") null else country
         applyFilters()
     }
 
+    /**
+     * Filters the flight list based on the selected country.
+     *
+     * If no country is selected, all flights are displayed.
+     * The filtered result is reflected in the UI state.
+     */
     private fun applyFilters() {
         val country = selectedCountry.value
 
@@ -82,23 +97,38 @@ class HomePageViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Starts automatic polling to fetch airplane data every 10 seconds.
+     *
+     * Cancels any previously running polling job.
+     * Polling continues as long as the ViewModel is active.
+     */
     private fun startPolling() {
         counterJob?.cancel()
         counterJob = viewModelScope.launch {
             while (isActive) {
                 delay(10_000)
-                currentBounds?.let { getAirplanes(it) }
+                currentGeoBounds?.let { getAirplanes(it) }
             }
         }
     }
 
-    private fun getAirplanes(bounds: Bounds) =
+    /**
+     * Fetches airplane data from the OpenSky service
+     * for the given map bounds.
+     *
+     * Observes the API response as a Flow and:
+     *  - Updates UI to loading state
+     *  - Displays error messages on failure
+     *  - Updates flight list on success
+     */
+    private fun getAirplanes(geoBounds: GeoBounds) =
         viewModelScope.launch(Dispatchers.IO) {
             openSkyUseCase.getAirplane(
-                bounds.lamin,
-                bounds.lomin,
-                bounds.lamax,
-                bounds.lomax
+                geoBounds.lamin,
+                geoBounds.lomin,
+                geoBounds.lamax,
+                geoBounds.lomax
             ).collectLatest { response ->
                 when (response) {
                     is Response.Loading -> {
@@ -118,6 +148,12 @@ class HomePageViewModel @Inject constructor(
             }
         }
 
+    /**
+     * Extracts unique country names from the flight list.
+     *
+     * The country list is created only once after the first successful data load.
+     * An "All" option is added at the beginning of the list.
+     */
     private fun updateCountryList(flights: List<FlightUiModel>) {
         if (_countries.value.isNotEmpty()) return
         val uniqueCountries = flights

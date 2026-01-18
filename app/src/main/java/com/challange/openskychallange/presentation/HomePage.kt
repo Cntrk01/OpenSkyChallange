@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -39,6 +40,11 @@ fun HomePage(
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     var selectedZoomScale by remember { mutableFloatStateOf(13f) }
 
+    /**
+     * The application makes a one-time service request at startup.
+     *   NOTE: I have disabled the Landscape feature. Even if the screen is rotated horizontally,
+     *   it will remain vertical. Therefore, the LaunchedEffect will not work again...
+     * */
     LaunchedEffect(Unit) {
         homeViewModel
             .onBoundsChanged(
@@ -96,7 +102,9 @@ fun HomePage(
 
             if (uiState.isLoading){
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    color = Color.Green,
                 )
             }
 

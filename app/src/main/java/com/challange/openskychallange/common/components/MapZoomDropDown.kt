@@ -25,6 +25,11 @@ private val zoomOptions = listOf(
     3f, 5f, 7f, 9f, 11f, 13f, 15f, 17f, 19f
 )
 
+/**
+ * This Composable displays a dropdown menu for selecting a map zoom level.
+ * The currently selected zoom value is provided from outside (selectedZoom), and when the user selects a new zoom level, it notifies the parent via the onZoomSelected callback.
+ * It only manages the expanded/collapsed state of the dropdown internally.
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapZoomDropdown(

@@ -1,7 +1,7 @@
 package com.challange.openskychallange.domain
 
 import com.challange.openskychallange.common.response.Response
-import com.challange.openskychallange.domain.models.OpenSkyServiceModel
+import com.challange.openskychallange.domain.models.OpenSkyServiceResponse
 import com.challange.openskychallange.domain.repository.OpenSkyRepository
 import com.challange.openskychallange.domain.usecase.OpenSkyUseCase
 import kotlinx.coroutines.flow.toList
@@ -32,7 +32,7 @@ class OpenSkyUseCaseTest {
         val lamax = 42.0
         val lomax = 30.0
 
-        val mockServiceResponse = OpenSkyServiceModel(
+        val mockServiceResponse = OpenSkyServiceResponse(
             time = 12345,
             states = listOf(
                 listOf("4bb111", "THY123", "Turkey", 1705584000, 1705584000, 28.0, 41.0, 10000.0, false, 250.0, 90.0, 0.0)

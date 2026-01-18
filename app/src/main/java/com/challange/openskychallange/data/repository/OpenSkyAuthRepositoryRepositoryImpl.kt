@@ -8,6 +8,9 @@ import okhttp3.Response
 import okhttp3.Route
 import javax.inject.Inject
 
+/**
+ * This class helps us obtain tokens so we can authenticate before pulling data from OpenSky.
+ * */
 class OpenSkyAuthRepositoryRepositoryImpl @Inject constructor(
     private val authApi: OpenSkyAuthApi,
     private val tokenManager: TokenManager
