@@ -59,9 +59,11 @@ fun FlightMap(
     }
 
     var selectedFlightIcao by remember { mutableStateOf<String?>(null) }
+    var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
 
     val context = LocalContext.current
 
+    //If a new zoom value becomes available, it will be triggered and the camera's zoom level will change.
     LaunchedEffect(zoomScale) {
         cameraPositionState.animate(
             update = CameraUpdateFactory.zoomTo(zoomScale),
@@ -69,6 +71,8 @@ fun FlightMap(
         )
     }
 
+    //The camera captures movement. Is it moving? A boolean value is assigned accordingly,
+    //and it also shares the last known position coordinates when the movement stops.
     LaunchedEffect(cameraPositionState.isMoving) {
         snapshotFlow { cameraPositionState.isMoving }
             .collect { isMoving ->
@@ -89,12 +93,14 @@ fun FlightMap(
                 }
             }
     }
-    var planeIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         onMapClick = { selectedFlightIcao = null },
         onMapLoaded = {
+            //When this image value is given before the map is loaded, the planes appear on the screen even
+            // though there is no map, which is not what I want, therefore the value is set here.
             planeIcon = context.bitmapDescriptorFromResource(R.drawable.icon_airplane, 90, 90)
         },
     ) {
@@ -104,6 +110,7 @@ fun FlightMap(
                     LatLng(flight.lat, flight.lon),
                 )
 
+                //Effect that triggers the infobox to open.
                 LaunchedEffect(selectedFlightIcao) {
                     if (selectedFlightIcao == flight.icao24) {
                         markerState.showInfoWindow()
@@ -112,6 +119,7 @@ fun FlightMap(
                     }
                 }
 
+                //Clicking on the plane opens an info box that shares some information about the aircraft.
                 MarkerInfoWindowContent(
                     icon = planeIcon,
                     state = markerState,
