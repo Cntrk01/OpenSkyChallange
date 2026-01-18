@@ -68,13 +68,6 @@ android {
     hilt {
         enableAggregatingTask = false
     }
-
-    //For Robolectric to be able to access resources, this setting must be present within the Android block.
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
 }
 
 dependencies {
@@ -109,5 +102,8 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
 
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.ui.test.junit4)
 }
