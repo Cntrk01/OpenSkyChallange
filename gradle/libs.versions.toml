@@ -4,6 +4,7 @@ coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
+kotlinxCoroutinesTest = "1.7.3"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 kotlin = "2.0.21"
@@ -12,14 +13,21 @@ composeBom = "2024.09.00"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 daggerHilt = "2.48"
-kspVersion = "2.2.10-2.0.2"
+kspVersion = "2.0.21-1.0.25" #Bu versiyon hiçbir zaman kotlin versiyonu altında kalmamalı hata veriyor.
 
+playServicesMaps = "18.2.0"
+mapsCompose = "4.4.1"
+mockitoCore = "5.8.0"
+mockitoKotlin = "5.2.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 gson = "2.11.0"
+coreKtxVersion = "1.17.0"
+uiTestJunit4 = "1.7.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,17 +46,24 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android" , version.ref = "daggerHilt"}
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref ="kspVersion" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 
 
