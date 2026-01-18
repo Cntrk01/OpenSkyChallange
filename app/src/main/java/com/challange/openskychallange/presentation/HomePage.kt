@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.challange.openskychallange.common.components.CountryDropDownMenu
-import com.challange.openskychallange.common.components.FlightMapComponent
+import com.challange.openskychallange.common.components.CountryDropDown
+import com.challange.openskychallange.common.components.FlightMap
 import com.challange.openskychallange.common.components.MapZoomDropdown
 
 @Composable
@@ -56,7 +55,7 @@ fun HomePage(
          .padding(8.dp)
     ) {
         Row {
-            CountryDropDownMenu(
+            CountryDropDown(
               modifier = Modifier
                   .weight(2f),
               countries = countryList,
@@ -79,7 +78,7 @@ fun HomePage(
         Spacer(modifier = Modifier.height(8.dp))
 
         Box {
-            FlightMapComponent(
+            FlightMap(
                 flights = uiState.airplaneList,
                 zoomScale = selectedZoomScale,
                 onCameraMoving = {
