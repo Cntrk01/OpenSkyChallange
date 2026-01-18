@@ -32,6 +32,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 /**
  * This Composable is the main map component that displays flights as interactive markers on Google Map.
@@ -98,9 +99,10 @@ fun FlightMap(
         },
     ) {
             flights.forEach { flight ->
-                val markerState = remember(flight.icao24) {
-                    MarkerState(LatLng(flight.lat, flight.lon))
-                }
+                val markerState = rememberMarkerState(
+                    flight.icao24,
+                    LatLng(flight.lat, flight.lon),
+                )
 
                 LaunchedEffect(selectedFlightIcao) {
                     if (selectedFlightIcao == flight.icao24) {
@@ -115,9 +117,10 @@ fun FlightMap(
                     state = markerState,
                     rotation = flight.heading ?: 0f,
                     anchor = Offset(0.5f, 0.5f),
+                    zIndex = if (selectedFlightIcao == flight.icao24) 1.0f else 0.0f,
                     onClick = {
                         selectedFlightIcao = if (selectedFlightIcao == flight.icao24) null else flight.icao24
-                        true
+                        false
                     },
                     content = {
                         FlightInfoWindow(flight)
